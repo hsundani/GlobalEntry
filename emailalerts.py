@@ -78,7 +78,7 @@ for ids in location_ids:
             password = "your_app_password"
             send_email(subject, body, sender, recipients, password)
     else:
-      print (f"No appointments available in {location_names[i]} for the next {max_days} days")
+        print (f"No appointments available in {location_names[i]} for the next {max_days} days")
     i += 1
     # Wait 5 sec before the next API ping
     time.sleep(5)
