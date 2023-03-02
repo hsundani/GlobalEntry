@@ -29,7 +29,7 @@ headers = {
 }
 response = requests.get(endpoint, headers)
 
-# Initialize client with the credential and subscription.
+# Initialize client with credentials and subscription details
 compute_client = ComputeManagementClient(
     azure_credential,
     SUBSCRIPTION_ID
