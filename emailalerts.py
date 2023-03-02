@@ -43,7 +43,7 @@ async_vm_start.wait()
 # Define how far out to check for appointments
 max_days = 365
 
-#Create a function to send email
+#Create a function to send emails
 def send_email(subject, body, sender, recipients, password):
     msg = MIMEText(body)
     msg['Subject'] = subject
@@ -82,7 +82,6 @@ for ids in location_ids:
     i += 1
     # Wait 5 sec before the next API ping
     time.sleep(5)
-
 
 # Stop and deallocate Azure VM
 async_vm_stop = compute_client.virtual_machines.begin_deallocate(
