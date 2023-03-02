@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 from email.mime.text import MIMEText
 from azure.identity import DefaultAzureCredential
 from azure.mgmt.compute import ComputeManagementClient
+from twilio.rest import Client
 
 # Pass Azure subscription details 
 SUBSCRIPTION_ID = "your_subscription_id"
@@ -29,7 +30,7 @@ headers = {
 }
 response = requests.get(endpoint, headers)
 
-# Initialize client with credentials and subscription details
+# Initialize Azure client with credentials and subscription details
 compute_client = ComputeManagementClient(
     azure_credential,
     SUBSCRIPTION_ID
@@ -39,6 +40,11 @@ compute_client = ComputeManagementClient(
 async_vm_start = compute_client.virtual_machines.begin_start(
     resource_group_name, vm_name)
 async_vm_start.wait()
+
+# Initialize Twilio client with credentials
+account_sid = os.environ['TWILIO_ACCOUNT_SID']
+auth_token = os.environ['TWILIO_AUTH_TOKEN']
+client = Client(account_sid, auth_token)
 
 # Define how far out to check for appointments
 max_days = 365
@@ -70,13 +76,23 @@ for ids in location_ids:
     if appointments:
         available_date = datetime.strptime(appointments[0]['startTimestamp'], '%Y-%m-%dT%H:%M')
         if available_date <= (datetime.now() + timedelta (days=max_days)):
+            
             print (f"There is a Global Entry appointment available in {location_names[i]} on {available_date.date()} at {available_date.time()}")
+            
+            #Send email if appointment found
             subject = "Global Entry appointment available"
             body = "There is a Global Entry appointment available in {} on {} at {}.\n\n Login now to schedule your appointment - {}".format(location_names[i], available_date.date(), available_date.time(), login_url)
             sender = "sender_email"
             recipients = ["receipient_email_1", "receipient_email_2"]
             password = "your_app_password"
             send_email(subject, body, sender, recipients, password)
+            
+            #Send text if appointment found
+            client.messages.create(
+                     body = "There is a Global Entry appointment available in {} on {} at {}.\n\n Login now to schedule your appointment - {}".format(location_names[i], available_date.date(), available_date.time(), login_url),
+                     from_='sender_phone_no',
+                     to='receipient_phone_no'
+                 )
     else:
         print (f"No appointments available in {location_names[i]} for the next {max_days} days")
     i += 1
