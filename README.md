@@ -16,10 +16,6 @@ This code is a Python script that queries the US Customs and Border Protection (
     pip install twilio
 - Clone or download the script to your local system.
 
-Clone or download the repository to your local machine.
-
-Install the required libraries by running pip install -r requirements.txt in the repository directory.
-
 ## Set the following environment variables:
 - IDENTITY_ENDPOINT and IDENTITY_HEADER: These environment variables are required for Azure VM authentication. They should be set to the Identity Endpoint and the Identity Header values provided by your Azure subscription.
 - SUBSCRIPTION_ID: The Azure subscription ID that should be used for VM management.
